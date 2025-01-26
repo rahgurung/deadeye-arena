@@ -1,0 +1,52 @@
+# User-specific files
+*.xcuserstate
+*.xcworkspace
+.idea/
+
+# Build generated files
+DerivedData/
+build/
+
+# Xcode project files
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/project/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/xcuserstate/
+
+# Dependency manager files
+Carthage/Build/
+Carthage/Checkouts/
+Pods/
+
+# Swift Package Manager
+/.build/
+Package.pins
+Package.resolved
+
+# CocoaPods
+podfile.lock
+
+# App-specific files
+*.swp
+*.DS_Store
+
+# Generated documentation
+docs/
+
+# Ignore personal configurations and certificates
+*.mobileprovision
+*.p12
+*.cer
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# macOS-specific
+.idea/
+*.iml
+*.hmap
+
+# User data
+*.db
+*.sqlite
