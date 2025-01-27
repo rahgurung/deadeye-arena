@@ -20,6 +20,12 @@ class GameScene: SKScene {
             scoreLabel.text = "Score: \(score)"
         }
     }
+    
+    var bulletsInClip = 3 {
+        didSet {
+            bulletsSprite.texture = bulletTextures[bulletsInClip]
+        }
+    }
 
     var scoreLabel: SKLabelNode!
     var targetSpeed = 4.0
@@ -113,12 +119,106 @@ class GameScene: SKScene {
     }
     
     private func createTarget() {
-        // create targets
+        let target = Target()
+        target.setup()
         
+        let level = Int.random(in: 0...2)
+        var movingRight = true
+        
+        switch level {
+        case 0:
+            // in front of the grass
+            target.zPosition = 150
+            target.position.y = 280
+            target.setScale(0.7)
+        case 1:
+            // in front of the water background
+            target.zPosition = 250
+            target.position.y = 190
+            target.setScale(0.85)
+            movingRight = false
+        default:
+            // in front of the water foreground
+            target.zPosition = 350
+            target.position.y = 100
+        }
+        let move: SKAction
+
+        if movingRight {
+            target.position.x = 0
+            move = SKAction.moveTo(x: 800, duration: targetSpeed)
+        } else {
+            target.position.x = 800
+            target.xScale = -target.xScale
+            move = SKAction.moveTo(x: 0, duration: targetSpeed)
+        }
+
+        let sequence = SKAction.sequence([move, SKAction.removeFromParent()])
+        target.run(sequence)
+        addChild(target)
+
+        levelUp()
     }
     
     private func gameOver() {
-        // over the game
+        isGameOver = true
+
+        let gameOverTitle = SKSpriteNode(imageNamed: "game-over")
+        gameOverTitle.alpha = 0
+        gameOverTitle.setScale(2)
+
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+        let scaleDown = SKAction.scale(to: 1, duration: 0.3)
+        let group = SKAction.group([fadeIn, scaleDown])
+
+        gameOverTitle.run(group)
+        gameOverTitle.zPosition = 900
+        addChild(gameOverTitle)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if isGameOver {
+            if let newGame = SKScene(fileNamed: "GameScene") {
+                let transition = SKTransition.doorway(withDuration: 1)
+                view?.presentScene(newGame, transition: transition)
+            }
+        } else {
+            // If the touch happens in a specific area, let's simulate the reload
+            if let touch = touches.first {
+                let location = touch.location(in: self)
+                
+                // Assuming you have a specific button or area where the reload happens
+                if bulletsSprite.contains(location) {  // reloadButton is a SKSpriteNode or SKNode
+                    run(SKAction.playSoundFileNamed("reload.wav", waitForCompletion: false))
+                    bulletsInClip = 3
+                    score -= 1
+                    return
+                }
+            }
+
+            if bulletsInClip > 0 {
+                run(SKAction.playSoundFileNamed("shot.wav", waitForCompletion: false))
+                bulletsInClip -= 1
+
+                if let touch = touches.first {
+                    let location = touch.location(in: self)
+                    shot(at: location)
+                }
+            } else {
+                run(SKAction.playSoundFileNamed("empty.wav", waitForCompletion: false))
+            }
+        }
+    }
+
+    func shot(at location: CGPoint) {
+        let hitNodes = nodes(at: location).filter { $0.name == "target" }
+
+        guard let hitNode = hitNodes.first else { return }
+        guard let parentNode = hitNode.parent as? Target else { return }
+
+        parentNode.hit()
+
+        score += 3
     }
 
     override func update(_ currentTime: TimeInterval) {
