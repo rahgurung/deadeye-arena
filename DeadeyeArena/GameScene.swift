@@ -173,6 +173,9 @@ class GameScene: SKScene {
 
         gameOverTitle.run(group)
         gameOverTitle.zPosition = 900
+        if let scene = self.scene {
+            gameOverTitle.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        }
         addChild(gameOverTitle)
     }
     

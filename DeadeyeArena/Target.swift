@@ -16,7 +16,7 @@ class Target: SKNode {
         let targetType = Int.random(in: 0...3)
         
         stick = SKSpriteNode(imageNamed: "stick\(stickType)")
-        target = SKSpriteNode(imageNamed: "stick\(targetType)")
+        target = SKSpriteNode(imageNamed: "target\(targetType)")
         
         target.name = "target"
         target.position.y += 116
