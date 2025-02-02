@@ -45,7 +45,3 @@
 
 ## 🤝 Contributing  
 Got ideas to improve the game? Feel free to **fork** the repo and submit a **pull request**!  
-
-## 🎵 Credits  
-- **Game Design & Development:** [Rahul Gurung](https://github.com/yourusername)  
-- **Graphics & Sound:** Free and custom assets  
